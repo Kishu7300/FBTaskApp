@@ -21,16 +21,30 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
-        android:hint="Enter Description"
+        android:textStyle="bold|italic"
+        android:textAlignment="textStart"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:background="@drawable/round_edit_text"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
+
+
+    <Button
+        android:id="@+id/btn_photo"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:text="Add Photo"
+        app:layout_constraintTop_toBottomOf="@+id/tv_desc"/>
+
 
     <Button
         android:id="@+id/btn_add"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginTop="20dp"
-        android:text="Click"
-        app:layout_constraintTop_toBottomOf="@+id/tv_desc"/>
+        android:text="Submit"
+        app:layout_constraintTop_toBottomOf="@+id/btn_photo"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

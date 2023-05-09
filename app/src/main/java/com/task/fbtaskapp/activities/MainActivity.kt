@@ -3,7 +3,9 @@ package com.task.fbtaskapp.activities
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -33,7 +35,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-
         taskArrayList = java.util.ArrayList()
 
         setUserTaskRecyclerView()
@@ -42,22 +43,43 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUserTaskRecyclerView() {
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        taskAdapter = TaskAdapter(this) { task: UserTask ->
+        taskAdapter = TaskAdapter(this, { task: UserTask ->
             strickedTaskFromFirebaseList(task)
-        }
+        }, { task: UserTask ->
+            DetailsActivity.openActivity(this@MainActivity, task)
+        })
         binding.rvTaskList.layoutManager = layoutManager
         binding.rvTaskList.adapter = taskAdapter
         taskAdapter.setUserTaskList(ArrayList())
+        ItemTouchHelper(object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val deletedTask: UserTask? =
+                    taskArrayList?.get(viewHolder.adapterPosition)
+
+                databaseReference.child(deletedTask!!.taskId).removeValue().addOnSuccessListener {
+                    Toast.makeText(this@MainActivity, "One Task removed", Toast.LENGTH_LONG).show()
+                }.addOnFailureListener {
+                    Toast.makeText(this@MainActivity, "Failed to remove Task", Toast.LENGTH_LONG)
+                        .show()
+                }
+
+            }
+        }).attachToRecyclerView(binding.rvTaskList)
+
+
     }
 
     private fun strickedTaskFromFirebaseList(task: UserTask) {
-
-       /* databaseReference.child(task.taskId).removeValue().addOnSuccessListener {
-            Toast.makeText(this@MainActivity, "One Task removed", Toast.LENGTH_LONG).show()
-        }.addOnFailureListener {
-            Toast.makeText(this@MainActivity, "Failed to remove Task", Toast.LENGTH_LONG).show()
-        }*/
-
         databaseReference.child(task.taskId).setValue(task)
     }
 

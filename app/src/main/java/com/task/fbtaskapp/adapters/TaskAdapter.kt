@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.task.fbtaskapp.databinding.CardItemLayoputBinding
 import com.task.fbtaskapp.models.UserTask
 
-class TaskAdapter(private val mContext: Context, private val onItemCheck: (task: UserTask) -> Any) :
+class TaskAdapter(private val mContext: Context, private val onItemCheck: (task: UserTask) -> Any,  private val onItemClickForDetails: (task: UserTask) -> Any) :
     RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     private var taskList: ArrayList<UserTask> = ArrayList()
@@ -28,6 +28,10 @@ class TaskAdapter(private val mContext: Context, private val onItemCheck: (task:
             binding.ckTask.setOnClickListener {
                 userTask.stricked = binding.ckTask.isChecked
                 onItemCheck(userTask)
+            }
+
+            binding.llRoot.setOnClickListener {
+                onItemClickForDetails(userTask)
             }
         }
 
